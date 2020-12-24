@@ -149,7 +149,7 @@ best_score_progress.append(best_score)
 # Now we'll go through the generations of genetic algorithm
 for generation in range(maximum_generation):
     # Create an empty list for new population
-    new_population = []
+    new_population = [] 
     
     # Create new popualtion generating two children at a time
     for i in range(int(population_size/2)):
