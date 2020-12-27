@@ -75,7 +75,20 @@ class Graph:
                 count= count+1
         return count
     
-    def lit_dict(self):
+    def lit_lists(self):
+        lit_dict = {}
+        vertex_list = []
+        light_list = []
+        for node in self.vert_dict.keys():
+            lit_dict[node] = self.vert_dict[node].light
+            vertex_list.append(node)
+            light_list.append(self.vert_dict[node].light)
+        
+        return lit_dict, vertex_list, light_list
+            
+        
+    
+    def lit_dict_neighbour(self):
         lit_dict = {}
         for node in self.vert_dict.keys():
             lit_node = 0
@@ -93,18 +106,19 @@ class Graph:
         
         return lit_dict
     
-    def is_lit_nodes(self):
-        lit_dict = self.lit_dict()
+    def is_lit_node(self):
+        lit_dict = self.lit_dict_neighbour()
         if 0 in lit_dict.values():
             return 0
         else:
             return 1
         
-    def switch_on(self,i):
-        self.vert_dict[i].light = 1
         
     def switch_off(self,i):
         self.vert_dict[i].light = 0
+    
+    def switch_on(self,i):
+        self.vert_dict[i].light = 1
     
     
     def is_opti_lit_nodes(self):
