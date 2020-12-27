@@ -26,16 +26,18 @@ class Vertex:
         return self.id
 
     
-    def swtich_on(self):
-        self.light = 1
+    # def swtich_on(self):
+    #     self.light = 1
         
-    def switch_off(self):
-        self.light = 1
+    # def switch_off(self):
+    #     self.light = 1
 
 class Graph:
     def __init__(self):
         self.vert_dict = {}
         self.num_vertices = 0
+        self.edges = []
+        
 
     def __iter__(self):
         return iter(self.vert_dict.values())
@@ -61,6 +63,7 @@ class Graph:
 
         self.vert_dict[frm].add_neighbour(self.vert_dict[to])
         self.vert_dict[to].add_neighbour(self.vert_dict[frm])
+        self.edges.append({frm,to})
 
     def get_vertices(self):
         return self.vert_dict.keys()
@@ -90,64 +93,83 @@ class Graph:
         
         return lit_dict
     
-    def is_lit(self):
+    def is_lit_nodes(self):
         lit_dict = self.lit_dict()
         if 0 in lit_dict.values():
             return 0
         else:
             return 1
+        
+    def switch_on(self,i):
+        self.vert_dict[i].light = 1
+        
+    def switch_off(self,i):
+        self.vert_dict[i].light = 0
     
     
-    def is_opti_lit(self):
+    def is_opti_lit_nodes(self):
         ok = 1
         if self.is_lit() == 0:
             return 0
+        
+        #check is the leaves are lit -> they can be always off
+        #in a minimally lit graph
+        
         for node in self.vert_dict.keys():
             if len(self.vert_dict[node].adjacent) == 1:
                 if self.vert_dict[node].light == 1:
                     ok = 0
+                    
+        #check if it's optimally lit
+                    
         for node in self.vert_dict.keys():
             if self.vert_dict[node].light == 1:
                 self.vert_dict[node].light = 0
                 if self.is_lit() == 1:
                     ok = 0
+                self.vert_dict[node].light = 1
         if ok == 0:
             return 0
         else:
             return 1
-        
-
+    
+    
+    def is_lit(self):
+        #checks if every street is enlightened
+        ok = 1
+        for edge in self.edges:
+            l = list(edge)
             
-def graf(no_nodes, no_edges):
-    g = Graph()
-    vert_list = [i for i in range(no_nodes)]
-    for i in range(no_nodes):
-        g.add_vertex(i, random.randrange(2))
+            if self.vert_dict[l[0]].light == 0 and self.vert_dict[l[1]].light == 0:
+                ok = 0
+        return ok
     
-    for i in range(no_edges):
-        frm = random.choice(vert_list)
-        c = random.choice(vert_list)
-        while c == frm:
-            c = random.choice(vert_list)
-        to = c
-        g.add_edge(frm, to)
-    return g
+    def is_min_lit(self):
+        #enlever un lampadaire plonge au moins une rue dans l'obscurite
+        if self.is_lit() == 0:
+            return 0
 
-def fake_con_graf(nr_edges):
-    #creates a connected graph
-    #it assigns random values for the lit condition (0 or 1)
-    #to assign specific values use the code
-    #g.add_edge(random.randrange(nr_edges+1),random.randrange(nr_edges+1),1,1)
-    #instead of 1,1 name the values you wish; 
-    g = Graph()
-    for i in range(nr_edges):
-        frm = random.randrange(nr_edges+1)
-        to = random.randrange(nr_edges+1)
-        while to == frm:
-            to = random.randrange(nr_edges+1)
-        g.add_edge(frm,to)
+        for node in self.vert_dict.keys():
+            if self.vert_dict[node].light == 1:
+                self.switch_off(node)
+                if self.is_lit() == 1:
+                    return 0
+                self.switch_on(node)
+        return 1
     
-    return g
+    def switch_graph_on(self):
+        for i in self.vert_dict.keys():
+            self.vert_dict[i].light = 1
+                
+                
+    
+    
+
+
+##############################################Class Ends
+    
+  
+
 
 def con_graf(nr_nodes,nr_edges):
     """  
@@ -190,10 +212,6 @@ def con_graf(nr_nodes,nr_edges):
         
     
 
-
-    
-#gr = graf(4,6)
-        
     
     
 
@@ -218,23 +236,23 @@ if __name__ == '__main__':
     g.add_edge('d', 'e')
     g.add_edge('e', 'f')
     g.add_edge('a','b')
-    # g.add_vertex(1,1)
-    # g.add_vertex(2,0)
-    # g.add_edge(1,2)
-    
-    
-    # h = Graph()
-    # h.add_edge(1,2)
-    # h.add_edge(2,5)
-    # h.add_edge(3,4)
-    # h.add_edge(4,2)
-    # h.add_edge(6,5)
+
+
     f = Graph()
     
     f.add_vertex(1,0)
     f.add_vertex(2,1)
     f.add_vertex(3,0)
-    f.add_edge(1,2)
-    f.add_edge(1,3)
+    f.add_vertex(4,0)
+    f.add_vertex(5,1)
+    f.add_vertex(6,1)
+    f.add_vertex(7,1)
     
-    
+    f.add_edge(1, 2)
+    f.add_edge(2, 3)
+    f.add_edge(4, 2)
+    f.add_edge(4, 5)
+    f.add_edge(4, 6)
+    f.add_edge(5, 6)
+    f.add_edge(6, 7)
+    f.add_edge(4, 7)
