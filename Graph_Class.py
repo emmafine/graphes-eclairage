@@ -162,21 +162,25 @@ class Graph:
         #enlever un lampadaire plonge au moins une rue dans l'obscurite
         if self.is_lit() == 0:
             return 0
+        ok = 1
 
         for node in self.vert_dict.keys():
             if self.vert_dict[node].light == 1:
                 self.switch_off(node)
                 if self.is_lit() == 1:
-                    return 0
+                    ok = 0
                 self.switch_on(node)
-        return 1
+        return ok
     
     def switch_graph_on(self):
         for i in self.vert_dict.keys():
             self.vert_dict[i].light = 1
                 
                 
-    
+    def switch_graph_off(self):
+        for i in self.vert_dict.keys():
+            self.vert_dict[i].light = 0
+                
     
 
 
