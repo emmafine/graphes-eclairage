@@ -273,7 +273,7 @@ for i in range(num_generations):
 #print("gen", generations)
     
     
-plt.plot(minimal, generations)
+plt.plot(generations, minimal)
 plt.xlabel('nombre de generations')
 plt.ylabel('nombres de graphes minimale')
 plt.grid()
